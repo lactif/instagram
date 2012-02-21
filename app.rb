@@ -252,7 +252,7 @@ get '/users/:id' do
     # redirect from numeric ID to username
     redirect user_url(@user.username) unless params[:id] =~ /\D/
     @photos = @user.photos params[:max_id]
-    @per_page = 20
+    @per_page = 200
   rescue Faraday::Error::ClientError => e
     log_instagram_error
     message = e.response[:body]['meta']['error_message']
@@ -294,7 +294,7 @@ get '/tags/:tag' do
   @tag = params[:tag]
   @title = "Photos tagged ##{@tag} on Instagram"
   @photos = Instagram::tag_recent_media(@tag, max_id: params[:max_id], count: 20)
-  @per_page = 20
+  @per_page = 200
 
   expires 10.minutes, :public
   haml(request.xhr? ? :photos : :index)
@@ -470,7 +470,7 @@ __END__
         .close
           %a{ href: "#close" } close
 
-- if @photos.respond_to?(:next_page) ? @photos.next_page : (@photos.length >= (@per_page || 20) and not root_path?)
+- if @photos.respond_to?(:next_page) ? @photos.next_page : (@photos.length >= (@per_page || 200) and not root_path?)
   - href = search_path? ? search_page(@photos.next_page) : request.path + "?max_id=#{@photos.last.id}"
   %li.pagination
     %a{ href: href } <span>Load more &rarr;</span>
