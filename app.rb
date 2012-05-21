@@ -252,7 +252,7 @@ get '/users/:id' do
     # redirect from numeric ID to username
     redirect user_url(@user.username) unless params[:id] =~ /\D/
     @photos = @user.photos params[:max_id]
-    @per_page = 20
+    @per_page = 200
   rescue Faraday::Error::ClientError => e
     log_instagram_error
     message = e.response[:body]['meta']['error_message']
